@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" />
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>懒加载</title>
+  <style>
+    img {
+      width: 80vw;
+      height: calc(80vw*160/256);
+      margin-bottom: 200px;
+      display: block;
+    }
+
+    img[src=''] {
+      opacity: 0;
+    }
+
+    h1 {
+      position: sticky;
+      top: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <h1 contenteditable>懒加载 标题可编辑</h1>
+  <img data-src="img/31.png" />
+  <img data-src="img/32.png" />
+  <img data-src="img/33.png" />
+  <img data-src="img/34.png" />
+  <img data-src="img/35.png" />
+  <img data-src="img/36.png" />
+  <img data-src="img/37.png" />
+  <img data-src="img/38.png" />
+  <img data-src="img/39.png" />
+  <img data-src="img/40.png" />
+  <img data-src="img/41.png" />
+  <img data-src="img/42.png" />
+  <img data-src="img/43.png" />
+  <img data-src="img/44.png" />
+  <img data-src="img/45.png" />
+  <img data-src="img/46.png" />
+  <img data-src="img/47.png" />
+  <img data-src="img/48.png" />
+  <img data-src="img/49.png" />
+  <img data-src="img/50.png" />
+  <script>
+
+  function lazyload () {
+    const imgs = document.querySelectorAll('img[data-src]');
+    const config = {
+      rootMargin: '0px',
+      threshold: 0
+    }
+
+    let observer = new IntersectionObserver((entries, self) => {
+      entries.forEach(item => {
+        if (item.isIntersecting) {
+          let img = item.target;
+          let src = img.dataset.src;
+          if (src) {
+            img.src = src;
+            img.removeAttribute('data-src');
+          }
+          self.unobserve(item.target);
+        }
+      })
+    }, config);
+
+
+    imgs.forEach(item => observer.observe(item));
+  }
+
+  window.addEventListener('load', lazyload);
+  window.addEventListener('scroll', throttle(lazyload, 200));
+
+  function throttle (fn, delay) {
+    let startTime = 0;
+    return function () {
+      let args = arguments;
+      let that = this;
+      let curTime = Date.now();
+      if (curTime - startTime > delay) {
+        fn.apply(that, args);
+        startTime = curTime;
+      }
+    };
+  }
+
+  </script>
+</body>
+
+</html>
